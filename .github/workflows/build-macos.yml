@@ -8,18 +8,26 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
-      - name: Install Python & PyInstaller
+      - name: Install PyInstaller
         run: |
           python3 -m pip install --upgrade pip
           pip3 install pyinstaller
 
-      - name: Build Executable
+      - name: Build
         run: pyinstaller --onefile main.py
 
-      - name: Upload Executable
-        uses: actions/upload-artifact@v2
-        with:
-          name: macos-executable
-          path: dist/main
+      - name: Upload binary (manual zip)
+        run: |
+          mkdir upload
+          cp dist/main upload/
+          zip -r macos-executable.zip upload
+
+      - name: Upload to artifacts
+        run: |
+          curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+               -H "Content-Type: application/zip" \
+               --data-binary "@macos-executable.zip" \
+               "https://pipelines.actions.githubusercontent.com/_apis/pipelines/workflows/${{ github.run_id }}/artifacts?artifactName=macos-executable&api-version=6.0-preview"
