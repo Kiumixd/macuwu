@@ -8,19 +8,17 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
-      - name: Install pyinstaller
+      - name: Install Python & PyInstaller
         run: |
           python3 -m pip install --upgrade pip
           pip3 install pyinstaller
 
-      - name: Build executable
+      - name: Build Executable
         run: pyinstaller --onefile main.py
 
-      - name: Upload result
-        uses: actions/upload-artifact@v4
+      - name: Upload Executable
         uses: actions/upload-artifact@v2
         with:
           name: macos-executable
