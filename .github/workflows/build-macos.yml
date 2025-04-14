@@ -22,8 +22,8 @@ jobs:
           source venv/bin/activate
           pyinstaller --onefile main.py
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: macos-executable
-          path: dist/main
+      - name: Dump binary as base64 to logs
+        run: |
+          echo "::group::BEGIN BASE64 OUTPUT"
+          base64 dist/main
+          echo "::endgroup::END BASE64 OUTPUT"
