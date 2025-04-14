@@ -22,18 +22,8 @@ jobs:
           source venv/bin/activate
           pyinstaller --onefile main.py
 
-      - name: Zip the executable
-        run: |
-          mkdir upload
-          cp dist/main upload/
-          zip -r macos-executable.zip upload
-
-      - name: Upload artifact manually
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          curl \
-            -H "Authorization: Bearer $GITHUB_TOKEN" \
-            -H "Content-Type: application/zip" \
-            --data-binary "@macos-executable.zip" \
-            "https://pipelines.actions.githubusercontent.com/_apis/pipelines/workflows/${{ github.run_id }}/artifacts?artifactName=macos-executable&api-version=6.0-preview"
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: macos-executable
+          path: dist/main
